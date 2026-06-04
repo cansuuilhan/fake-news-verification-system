@@ -1,7 +1,10 @@
 import streamlit as st
 import PyPDF2
-from app.services.analysis_service import AnalysisService
+import easyocr
+import numpy as np
+from PIL import Image
 
+from app.services.analysis_service import AnalysisService
 
 st.set_page_config(page_title="Güvenilir Haber Doğrulama", layout="wide")
 
@@ -122,6 +125,36 @@ def get_analysis_service():
     return AnalysisService()
 
 
+@st.cache_resource(show_spinner=False)
+def get_ocr_reader():
+    """
+    Sadece Türkçe OCR için EasyOCR reader.
+    İngilizce OCR desteği özellikle eklenmedi.
+    İlk çalıştırmada Türkçe OCR modeli indirilebilir.
+    """
+    return easyocr.Reader(["tr"], gpu=False)
+
+
+def read_image_file(uploaded_file) -> str:
+    """
+    Yüklenen PNG/JPG/JPEG görselinden Türkçe OCR ile metin çıkarır.
+    """
+    uploaded_file.seek(0)
+
+    image = Image.open(uploaded_file).convert("RGB")
+    image_array = np.array(image)
+
+    reader = get_ocr_reader()
+
+    ocr_results = reader.readtext(
+        image_array,
+        detail=0,
+        paragraph=True
+    )
+
+    return "\n".join(ocr_results).strip()
+
+
 def read_uploaded_file(uploaded_file) -> str:
     if uploaded_file is None:
         return ""
@@ -139,6 +172,9 @@ def read_uploaded_file(uploaded_file) -> str:
                 text += page_text + "\n"
 
         return text
+
+    if uploaded_file.type in ["image/png", "image/jpeg", "image/jpg"]:
+        return read_image_file(uploaded_file)
 
     return ""
 
@@ -181,18 +217,36 @@ def run_app():
         )
     else:
         uploaded_file = st.file_uploader(
-            "TXT veya PDF dosyası yükleyin",
-            type=["txt", "pdf"]
+            "TXT, PDF veya görsel dosyası yükleyin",
+            type=["txt", "pdf", "png", "jpg", "jpeg"]
         )
 
         if uploaded_file is not None:
-            news_text = read_uploaded_file(uploaded_file)
+            if uploaded_file.type in ["image/png", "image/jpeg", "image/jpg"]:
+                uploaded_file.seek(0)
+                image = Image.open(uploaded_file).convert("RGB")
+
+                st.image(
+                    image,
+                    caption="Yüklenen Görsel",
+                    use_container_width=True
+                )
+
+                with st.spinner("Görselden Türkçe metin çıkarılıyor..."):
+                    news_text = read_uploaded_file(uploaded_file)
+            else:
+                news_text = read_uploaded_file(uploaded_file)
 
             st.text_area(
                 "Yüklenen Dosyadan Çıkarılan Metin",
                 value=news_text,
                 height=300
             )
+
+            if not news_text.strip():
+                st.warning(
+                    "Dosyadan metin çıkarılamadı. Görsel bulanık olabilir, PDF taranmış olabilir veya dosya boş olabilir."
+                )
 
     if st.button("🚀 ANALİZ ET", key="analyze"):
         if not news_text.strip():
