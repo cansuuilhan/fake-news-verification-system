@@ -118,10 +118,15 @@ class RetrievalService:
         )
 
         results = []
+        
+        # GÜVENLİK BARAJI (THRESHOLD)
+        # Yapay zekâ anlamsal skoru 0.42'den düşük olan alakasız haberleri tamamen eler.
+        MIN_RETRIEVAL_SCORE = 0.42
 
         for idx, score in ranked_results:
-            results.append(
-                self.documents[idx][:700]
-            )
+            if score >= MIN_RETRIEVAL_SCORE:
+                results.append(
+                    self.documents[idx][:700]
+                )
 
         return results

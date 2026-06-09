@@ -127,55 +127,37 @@ def get_analysis_service():
 
 @st.cache_resource(show_spinner=False)
 def get_ocr_reader():
-    """
-    Sadece Türkçe OCR için EasyOCR reader.
-    İngilizce OCR desteği özellikle eklenmedi.
-    İlk çalıştırmada Türkçe OCR modeli indirilebilir.
-    """
     return easyocr.Reader(["tr"], gpu=False)
 
 
 def read_image_file(uploaded_file) -> str:
-    """
-    Yüklenen PNG/JPG/JPEG görselinden Türkçe OCR ile metin çıkarır.
-    """
     uploaded_file.seek(0)
-
     image = Image.open(uploaded_file).convert("RGB")
     image_array = np.array(image)
-
     reader = get_ocr_reader()
-
     ocr_results = reader.readtext(
         image_array,
         detail=0,
         paragraph=True
     )
-
     return "\n".join(ocr_results).strip()
 
 
 def read_uploaded_file(uploaded_file) -> str:
     if uploaded_file is None:
         return ""
-
     if uploaded_file.type == "text/plain":
         return uploaded_file.read().decode("utf-8")
-
     if uploaded_file.type == "application/pdf":
         pdf_reader = PyPDF2.PdfReader(uploaded_file)
         text = ""
-
         for page in pdf_reader.pages:
             page_text = page.extract_text()
             if page_text:
                 text += page_text + "\n"
-
         return text
-
     if uploaded_file.type in ["image/png", "image/jpeg", "image/jpg"]:
         return read_image_file(uploaded_file)
-
     return ""
 
 
@@ -225,28 +207,16 @@ def run_app():
             if uploaded_file.type in ["image/png", "image/jpeg", "image/jpg"]:
                 uploaded_file.seek(0)
                 image = Image.open(uploaded_file).convert("RGB")
-
-                st.image(
-                    image,
-                    caption="Yüklenen Görsel",
-                    use_container_width=True
-                )
-
+                st.image(image, caption="Yüklenen Görsel", use_container_width=True)
                 with st.spinner("Görselden Türkçe metin çıkarılıyor..."):
                     news_text = read_uploaded_file(uploaded_file)
             else:
                 news_text = read_uploaded_file(uploaded_file)
 
-            st.text_area(
-                "Yüklenen Dosyadan Çıkarılan Metin",
-                value=news_text,
-                height=300
-            )
+            st.text_area("Yüklenen Dosyadan Çıkarılan Metin", value=news_text, height=300)
 
             if not news_text.strip():
-                st.warning(
-                    "Dosyadan metin çıkarılamadı. Görsel bulanık olabilir, PDF taranmış olabilir veya dosya boş olabilir."
-                )
+                st.warning("Dosyadan metin çıkarılamadı. Görsel bulanık olabilir, PDF taranmış olabilir veya dosya boş olabilir.")
 
     if st.button("🚀 ANALİZ ET", key="analyze"):
         if not news_text.strip():
@@ -283,7 +253,6 @@ def run_app():
         with col1:
             badge_class = "real-badge" if "Sahte" not in result.label else "fake-badge"
             icon = "✅" if "Sahte" not in result.label else "🚨"
-
             st.markdown(f"""
             <div class="result-card" style="text-align:center;">
                 <div style="font-size:4rem; margin-bottom:1rem;">{icon}</div>
@@ -295,12 +264,8 @@ def run_app():
             st.markdown(f"""
             <div class="result-card">
                 <div class="metric-container">
-                    <h3 style="color:#1e40af; margin:0; font-size:2.5rem;">
-                        %{result.confidence:.1f}
-                    </h3>
-                    <p style="color:#3b82f6; font-weight:700; margin:0;">
-                        GÜVEN ORANI
-                    </p>
+                    <h3 style="color:#1e40af; margin:0; font-size:2.5rem;">%{result.confidence:.1f}</h3>
+                    <p style="color:#3b82f6; font-weight:700; margin:0;">GÜVEN ORANI</p>
                 </div>
                 <div style="margin-top:1.5rem; padding:1.2rem; background:rgba(59,130,246,0.06); border-radius:12px; border-left:4px solid #3b82f6;">
                     <strong>Açıklama:</strong><br>
@@ -317,35 +282,9 @@ def run_app():
             """, unsafe_allow_html=True)
 
             for index, claim in enumerate(result.claims, start=1):
-                st.markdown(
-                    f'<div class="claim-item"><strong>{index}.</strong> {claim}</div>',
-                    unsafe_allow_html=True
-                )
+                st.markdown(f'<div class="claim-item"><strong>{index}.</strong> {claim}</div>', unsafe_allow_html=True)
 
-        if result.evidence:
-            st.markdown("""
-            <div class="result-card">
-                <h3 class="section-title">📋 Bulunan Kanıtlar</h3>
-            </div>
-            """, unsafe_allow_html=True)
-
-            for claim, evidences in result.evidence.items():
-                st.markdown(
-                    f'<div style="margin-bottom:1rem;"><strong style="color:#1e40af;">İddia:</strong> {claim}</div>',
-                    unsafe_allow_html=True
-                )
-
-                if evidences:
-                    for index, evidence in enumerate(evidences, start=1):
-                        st.markdown(
-                            f'<div class="evidence-item"><strong>{index}.</strong> {evidence[:300]}...</div>',
-                            unsafe_allow_html=True
-                        )
-                else:
-                    st.markdown(
-                        '<div class="evidence-item" style="border-left-color:#f87171;">Bu iddia için kanıt bulunamadı.</div>',
-                        unsafe_allow_html=True
-                    )
+        # "BULUNAN KANITLAR" KISMI TASARIMSAL VE STRATEJİK OLARAK BURADAN KALDIRILDI.
 
         if result.verifications:
             st.markdown("""
@@ -358,23 +297,16 @@ def run_app():
                 verdict = verification.get("verdict", "Bilinmiyor")
                 score = verification.get("score", 0)
                 explanation = verification.get("explanation", "")
-                best_evidence = verification.get("best_evidence", "")
 
                 st.markdown(f"""
                 <div class="verification-item">
                     <strong style="color:#1e40af;">İddia:</strong><br>
                     {claim}<br><br>
                     <strong>Karar:</strong> {verdict}<br>
-                    <strong>Skor:</strong> %{score:.1f}<br>
-                    <strong>Açıklama:</strong> {explanation}
+                    <strong>Anlamsal Uyumluluk Skoru:</strong> %{score:.1f}<br>
+                    <strong>Yapay Zekâ Analizi:</strong> {explanation}
                 </div>
                 """, unsafe_allow_html=True)
-
-                if best_evidence:
-                    st.markdown(
-                        f'<div class="evidence-item"><strong>🔍 En Güçlü Kanıt:</strong><br>{best_evidence[:250]}...</div>',
-                        unsafe_allow_html=True
-                    )
 
     st.markdown("""
     <div style="text-align:center; padding:3rem 0; color:#94a3b8;">
