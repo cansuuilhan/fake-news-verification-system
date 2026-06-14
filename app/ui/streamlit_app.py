@@ -420,29 +420,48 @@ def run_app():
                     unsafe_allow_html=True
                 )
 
-        if result.verifications:
-            st.markdown("### ✅ Doğrulama Sonuçları")
+        st.info(
+            "Bu sistem bir karar destek aracıdır. Sonuçlar kesin hüküm niteliği taşımaz; "
+            "özellikle kanıt bulunamayan veya düşük skorlu haberlerde ek kaynak kontrolü önerilir."
+        )
 
-            for claim, verification in result.verifications.items():
-                verdict = verification.get("verdict", "Bilinmiyor")
-                score = verification.get("score", 0)
-                confidence_level = verification.get("confidence_level", "Bilinmiyor")
+        if "Sahte" in result.final_decision or "Şüpheli" in result.final_decision or "Teyit" in result.final_decision:
+            st.warning("Sistem bu haber için şüpheli / teyit edilemedi sinyali üretmiştir.")
+        elif "Güvenilir" in result.final_decision:
+            st.success("Sistem bu haberin mevcut model ve arşiv kanıtlarıyla büyük ölçüde güvenilir göründüğünü belirtmektedir.")
+        else:
+            st.info("Sistem bu haber için kesin olmayan bir değerlendirme üretmiştir.")
 
-                with st.container(border=True):
+        with st.expander("Analiz Detayları ve Kanıt Durumu", expanded=False):
+            if result.verifications:
+                for claim, verification in result.verifications.items():
+                    verdict = verification.get("verdict", "Bilinmiyor")
+                    score = verification.get("score", 0)
+                    confidence_level = verification.get("confidence_level", "Bilinmiyor")
+                    explanation = verification.get("explanation", "")
+                    best_evidence = verification.get("best_evidence", "")
+
                     st.markdown("**İddia:**")
                     st.write(claim)
 
-                    show_verdict(verdict)
+                    st.markdown(f"**Kanıt Durumu:** {verdict}")
+                    st.markdown(f"**Güven Düzeyi:** {confidence_level} (%{score:.1f})")
 
-                    st.markdown(
-                        f"**Güven Düzeyi:** {confidence_level} (%{score:.1f})"
-                    )
+                    if explanation:
+                        st.caption(explanation)
 
-    st.markdown("""
-    <div class="footer">
-        <strong>Güvenilir Haber Doğrulama Sistemi</strong>
-    </div>
-    """, unsafe_allow_html=True)
+                    if score >= 60 and best_evidence:
+                        st.markdown("**İlgili arşiv metni:**")
+                        st.info(best_evidence)
+                    else:
+                        st.info(
+                            "Bu iddia için mevcut arşivde yeterince güçlü kanıt bulunamadı. "
+                            "Bu durum haberin kesin olarak yanlış olduğu anlamına gelmez."
+                        )
+
+                    st.divider()
+            else:
+                st.info("Metinden doğrulanabilir açık bir iddia çıkarılamadı.")
 
 
 if __name__ == "__main__":
