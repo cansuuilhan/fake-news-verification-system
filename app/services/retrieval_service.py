@@ -15,7 +15,6 @@ class RetrievalService:
         )
 
         self.document_embeddings = None
-
         self.cache_dir = "cache"
 
         self.documents_cache_path = os.path.join(
@@ -64,19 +63,17 @@ class RetrievalService:
 
         data["combined"] = (
             data["headline"].astype(str)
-            + " "
+            + ". "
             + data["content"].astype(str)
         )
-
-        # Test için ilk etapta sınırlıyoruz
-        data = data.sample(n=3000, random_state=42)
 
         self.documents = data["combined"].tolist()
 
         self.document_embeddings = self.embedding_model.encode(
             self.documents,
             convert_to_tensor=True,
-            show_progress_bar=True
+            show_progress_bar=True,
+            batch_size=32
         )
 
         with open(self.documents_cache_path, "wb") as file:
@@ -87,7 +84,7 @@ class RetrievalService:
             self.embeddings_cache_path
         )
 
-    def retrieve(self, query: str, top_k: int = 3):
+    def retrieve(self, query: str, top_k: int = 5):
         if not query or not query.strip():
             return []
 
@@ -118,15 +115,14 @@ class RetrievalService:
         )
 
         results = []
-        
-        # GÜVENLİK BARAJI (THRESHOLD)
-        # Yapay zekâ anlamsal skoru 0.42'den düşük olan alakasız haberleri tamamen eler.
-        MIN_RETRIEVAL_SCORE = 0.42
+
+        # Daha esnek eşik.
+        # 0.42 çok sert olduğu için bazı ilgili haberleri de eliyordu.
+        MIN_RETRIEVAL_SCORE = 0.25
 
         for idx, score in ranked_results:
             if score >= MIN_RETRIEVAL_SCORE:
-                results.append(
-                    self.documents[idx][:700]
-                )
+                evidence_text = self.documents[idx][:1000]
+                results.append(evidence_text)
 
         return results

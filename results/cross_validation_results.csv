@@ -1,0 +1,4 @@
+﻿Model,Fold-1,Fold-2,Fold-3,Fold-4,Fold-5,Ortalama Accuracy
+Logistic Regression,95.74,96.75,96.85,96.29,95.84,96.29
+Multinomial Naive Bayes,93.27,93.27,92.7,92.81,91.69,92.74
+Linear SVM,97.98,97.98,98.2,97.3,97.53,97.8

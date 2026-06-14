@@ -11,110 +11,152 @@ st.set_page_config(page_title="Güvenilir Haber Doğrulama", layout="wide")
 
 NEWS_THEME = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
     .stApp {
-        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+        background: linear-gradient(135deg, #f7f3ea 0%, #f4efe6 45%, #eef2f3 100%);
         font-family: 'Inter', sans-serif;
+        color: #1f2933;
+    }
+
+    .block-container {
+        padding-top: 2rem;
+        max-width: 1180px;
     }
 
     .header-section {
-        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
-        border-radius: 24px;
-        padding: 3rem 2.5rem;
-        box-shadow: 0 35px 60px -15px rgba(30, 64, 175, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        margin-bottom: 2.5rem;
+        background: linear-gradient(135deg, #233142 0%, #455d7a 100%);
+        border-radius: 18px;
+        padding: 2rem 2.2rem;
+        box-shadow: 0 20px 45px -25px rgba(35, 49, 66, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        margin-bottom: 1.8rem;
+    }
+
+    .header-title {
+        color: #ffffff;
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: -0.03em;
+    }
+
+    .header-subtitle {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.86);
+        margin-top: 0.7rem;
+        margin-bottom: 0;
     }
 
     .input-card, .result-card {
-        background: rgba(255, 255, 255, 0.97);
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(59, 130, 246, 0.1);
-        margin-bottom: 1.5rem;
+        background: rgba(255, 252, 246, 0.96);
+        border-radius: 16px;
+        padding: 1.35rem 1.5rem;
+        box-shadow: 0 14px 35px -24px rgba(31, 41, 51, 0.45);
+        border: 1px solid rgba(148, 163, 184, 0.22);
+        margin-bottom: 1.1rem;
     }
 
     .status-badge {
-        padding: 1rem 2rem;
-        border-radius: 50px;
+        padding: 0.75rem 1.1rem;
+        border-radius: 999px;
         font-weight: 700;
-        font-size: 1.1rem;
+        font-size: 0.95rem;
         display: inline-block;
         color: white;
     }
 
     .real-badge {
-        background: linear-gradient(135deg, #10b981, #059669);
+        background: linear-gradient(135deg, #5f8d4e, #3f6f44);
     }
 
     .fake-badge {
-        background: linear-gradient(135deg, #ef4444, #dc2626);
+        background: linear-gradient(135deg, #b85c5c, #9b4444);
     }
 
     .metric-container {
-        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-        border-radius: 20px;
-        padding: 2rem;
+        background: linear-gradient(135deg, #eef3f2 0%, #e0ebe8 100%);
+        border-radius: 15px;
+        padding: 1.4rem;
         text-align: center;
-        border: 1px solid rgba(59, 130, 246, 0.2);
+        border: 1px solid rgba(69, 93, 122, 0.16);
     }
 
     .claim-item {
-        background: rgba(248, 250, 252, 0.9);
-        border-left: 4px solid #3b82f6;
-        padding: 1.3rem;
-        border-radius: 14px;
-        margin-bottom: 1rem;
-        border: 1px solid rgba(59, 130, 246, 0.1);
-    }
-
-    .evidence-item {
-        background: rgba(248, 250, 252, 0.8);
-        border-left: 4px solid #10b981;
-        padding: 1.2rem;
+        background: rgba(250, 247, 240, 0.95);
+        border-left: 4px solid #455d7a;
+        padding: 1rem 1.1rem;
         border-radius: 12px;
-        margin-bottom: 1rem;
-        font-size: 0.95rem;
+        margin-bottom: 0.8rem;
+        border: 1px solid rgba(69, 93, 122, 0.12);
+        font-size: 0.92rem;
+        line-height: 1.55;
     }
 
-    .verification-item {
-        background: rgba(248, 250, 252, 0.9);
-        border-left: 4px solid #6366f1;
-        padding: 1.3rem;
-        border-radius: 14px;
-        margin-bottom: 1.2rem;
+    .final-decision-card {
+        background: linear-gradient(135deg, #fff7e6 0%, #f6ead5 100%);
+        border-left: 5px solid #c08b5c;
+        border-radius: 15px;
+        padding: 1.35rem 1.5rem;
+        margin-bottom: 1.1rem;
+        box-shadow: 0 14px 35px -24px rgba(120, 83, 45, 0.45);
+    }
+
+    .summary-card {
+        background: rgba(238, 246, 243, 0.98);
+        border-left: 5px solid #6b9080;
+        border-radius: 15px;
+        padding: 1.35rem 1.5rem;
+        margin-bottom: 1.1rem;
     }
 
     .section-title {
-        color: #1e293b;
+        color: #233142;
         font-weight: 700;
-        margin-bottom: 1.5rem;
-        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        font-size: 1.18rem;
+    }
+
+    .small-muted {
+        color: #6b7280;
+        font-size: 0.85rem;
     }
 
     .stTextArea textarea {
-        border-radius: 16px !important;
-        border: 2px solid rgba(59, 130, 246, 0.2) !important;
-        padding: 1.2rem !important;
-        background: rgba(255, 255, 255, 0.95) !important;
+        border-radius: 14px !important;
+        border: 1.5px solid rgba(69, 93, 122, 0.22) !important;
+        padding: 1rem !important;
+        background: rgba(255, 255, 255, 0.96) !important;
+        font-size: 0.92rem !important;
+        line-height: 1.55 !important;
     }
 
     div[data-testid="stButton"] > button {
-        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        background: linear-gradient(135deg, #455d7a 0%, #233142 100%);
         color: white;
         border: none;
-        border-radius: 14px;
-        height: 3rem;
+        border-radius: 12px;
+        height: 2.8rem;
         font-weight: 700;
+        font-size: 0.95rem;
         width: 100%;
     }
 
     div[data-testid="stButton"] > button:hover {
         color: white;
         border: none;
-        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        background: linear-gradient(135deg, #364b63 0%, #1f2933 100%);
+    }
+
+    div[data-testid="stRadio"] label {
+        font-size: 0.92rem !important;
+    }
+
+    .footer {
+        text-align:center;
+        padding:2.2rem 0;
+        color:#8b8b8b;
+        font-size:0.9rem;
     }
 </style>
 """
@@ -135,30 +177,85 @@ def read_image_file(uploaded_file) -> str:
     image = Image.open(uploaded_file).convert("RGB")
     image_array = np.array(image)
     reader = get_ocr_reader()
+
     ocr_results = reader.readtext(
         image_array,
         detail=0,
         paragraph=True
     )
+
     return "\n".join(ocr_results).strip()
 
 
 def read_uploaded_file(uploaded_file) -> str:
     if uploaded_file is None:
         return ""
+
     if uploaded_file.type == "text/plain":
         return uploaded_file.read().decode("utf-8")
+
     if uploaded_file.type == "application/pdf":
         pdf_reader = PyPDF2.PdfReader(uploaded_file)
         text = ""
+
         for page in pdf_reader.pages:
             page_text = page.extract_text()
             if page_text:
                 text += page_text + "\n"
+
         return text
+
     if uploaded_file.type in ["image/png", "image/jpeg", "image/jpg"]:
         return read_image_file(uploaded_file)
+
     return ""
+
+
+def show_verdict(verdict: str):
+    if verdict == "Destekleniyor":
+        st.markdown(
+            """
+            <div style="
+                color: #233142;
+                font-weight:700;
+                font-size:1rem;
+                margin:0.5rem 0;
+            ">
+                🟢 Destekleniyor
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    elif verdict == "Kısmen Destekleniyor":
+        st.markdown(
+            """
+            <div style="
+                color: #233142;
+                font-weight:700;
+                font-size:1rem;
+                margin:0.5rem 0;
+            ">
+                🟡 Kısmen Destekleniyor
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    else:
+        st.markdown(
+            """
+            <div style="
+                color: #233142;
+                font-weight:700;
+                font-size:1rem;
+                margin:0.5rem 0;
+            ">
+                🔴 Kanıt Bulunamadı
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
 
 def run_app():
@@ -166,11 +263,9 @@ def run_app():
 
     st.markdown("""
     <div class="header-section">
-        <h1 style="color:white; font-size:3rem; font-weight:800; margin:0;">
-            📰 Güvenilir Haber Doğrulama
-        </h1>
-        <p style="font-size:1.2rem; color:rgba(255,255,255,0.92); margin-top:1rem;">
-            Yapay zekâ destekli haber analizi ile metinleri değerlendirin.
+        <h1 class="header-title">📰 Güvenilir Haber Doğrulama</h1>
+        <p class="header-subtitle">
+            Yapay zekâ destekli haber analizi ile metin, dosya ve görselleri değerlendirin.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -180,6 +275,7 @@ def run_app():
     st.markdown("""
     <div class="input-card">
         <h3 class="section-title">Girdi Seçimi</h3>
+        <p class="small-muted">Analiz etmek istediğiniz haber metnini doğrudan yazabilir veya dosya yükleyebilirsiniz.</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -194,9 +290,10 @@ def run_app():
     if input_type == "Metin Gir":
         news_text = st.text_area(
             "Haber Metni",
-            height=300,
+            height=260,
             placeholder="Analiz etmek istediğiniz haber metnini buraya yapıştırın..."
         )
+
     else:
         uploaded_file = st.file_uploader(
             "TXT, PDF veya görsel dosyası yükleyin",
@@ -205,20 +302,44 @@ def run_app():
 
         if uploaded_file is not None:
             if uploaded_file.type in ["image/png", "image/jpeg", "image/jpg"]:
-                uploaded_file.seek(0)
-                image = Image.open(uploaded_file).convert("RGB")
-                st.image(image, caption="Yüklenen Görsel", use_container_width=True)
-                with st.spinner("Görselden Türkçe metin çıkarılıyor..."):
-                    news_text = read_uploaded_file(uploaded_file)
+                col_image, col_ocr = st.columns([1, 1])
+
+                with col_image:
+                    uploaded_file.seek(0)
+                    image = Image.open(uploaded_file).convert("RGB")
+                    st.image(image, caption="Yüklenen Görsel", use_container_width=True)
+
+                with col_ocr:
+                    with st.spinner("Görselden Türkçe metin çıkarılıyor..."):
+                        news_text = read_uploaded_file(uploaded_file)
+
+                    st.text_area(
+                        "Görselden Çıkarılan Metin",
+                        value=news_text,
+                        height=360
+                    )
+
+                    if not news_text.strip():
+                        st.warning(
+                            "Görselden metin çıkarılamadı. Görsel bulanık, düşük çözünürlüklü "
+                            "veya metin içermiyor olabilir."
+                        )
+
             else:
                 news_text = read_uploaded_file(uploaded_file)
 
-            st.text_area("Yüklenen Dosyadan Çıkarılan Metin", value=news_text, height=300)
+                st.text_area(
+                    "Yüklenen Dosyadan Çıkarılan Metin",
+                    value=news_text,
+                    height=280
+                )
 
-            if not news_text.strip():
-                st.warning("Dosyadan metin çıkarılamadı. Görsel bulanık olabilir, PDF taranmış olabilir veya dosya boş olabilir.")
+                if not news_text.strip():
+                    st.warning(
+                        "Dosyadan metin çıkarılamadı. PDF taranmış olabilir veya dosya boş olabilir."
+                    )
 
-    if st.button("🚀 ANALİZ ET", key="analyze"):
+    if st.button("Analiz Et", key="analyze"):
         if not news_text.strip():
             st.error("Lütfen haber metni girin veya dosya yükleyin.")
             return
@@ -226,26 +347,14 @@ def run_app():
         with st.spinner("Yapay zekâ analiz ediyor..."):
             result = service.analyze_news(news_text)
 
-        st.markdown('<div style="margin: 2rem 0;"></div>', unsafe_allow_html=True)
+        st.markdown('<div style="margin: 1.5rem 0;"></div>', unsafe_allow_html=True)
 
         if result.label == "Geçersiz Girdi":
-            st.markdown(f"""
-            <div class="result-card" style="border-left:6px solid #f59e0b; text-align:center;">
-                <div style="font-size:4rem;">⚠️</div>
-                <h3 style="color:#f59e0b;">{result.label}</h3>
-                <p style="color:#64748b;">{result.explanation}</p>
-            </div>
-            """, unsafe_allow_html=True)
+            st.warning(result.explanation)
             return
 
         if result.label == "Sistem Hatası":
-            st.markdown(f"""
-            <div class="result-card" style="border-left:6px solid #ef4444; text-align:center;">
-                <div style="font-size:4rem;">💥</div>
-                <h3 style="color:#ef4444;">{result.label}</h3>
-                <p style="color:#64748b;">{result.explanation}</p>
-            </div>
-            """, unsafe_allow_html=True)
+            st.error(result.explanation)
             return
 
         col1, col2 = st.columns([1, 3])
@@ -253,9 +362,10 @@ def run_app():
         with col1:
             badge_class = "real-badge" if "Sahte" not in result.label else "fake-badge"
             icon = "✅" if "Sahte" not in result.label else "🚨"
+
             st.markdown(f"""
             <div class="result-card" style="text-align:center;">
-                <div style="font-size:4rem; margin-bottom:1rem;">{icon}</div>
+                <div style="font-size:2.8rem; margin-bottom:0.8rem;">{icon}</div>
                 <div class="status-badge {badge_class}">{result.label}</div>
             </div>
             """, unsafe_allow_html=True)
@@ -264,13 +374,33 @@ def run_app():
             st.markdown(f"""
             <div class="result-card">
                 <div class="metric-container">
-                    <h3 style="color:#1e40af; margin:0; font-size:2.5rem;">%{result.confidence:.1f}</h3>
-                    <p style="color:#3b82f6; font-weight:700; margin:0;">GÜVEN ORANI</p>
+                    <h3 style="color:#233142; margin:0; font-size:2rem;">
+                        %{result.confidence:.1f}
+                    </h3>
+                    <p style="color:#455d7a; font-weight:700; margin:0; font-size:0.85rem;">
+                        SİSTEM DEĞERLENDİRME SKORU
+                    </p>
                 </div>
-                <div style="margin-top:1.5rem; padding:1.2rem; background:rgba(59,130,246,0.06); border-radius:12px; border-left:4px solid #3b82f6;">
-                    <strong>Açıklama:</strong><br>
-                    <span style="color:#475569;">{result.explanation}</span>
-                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        st.markdown(f"""
+        <div class="final-decision-card">
+            <h3 style="margin-top:0; color:#8a5a31; font-size:1.1rem;">🧭 Genel Nihai Karar</h3>
+            <h2 style="color:#5f3d22; margin-bottom:0.5rem; font-size:1.25rem;">{result.final_decision}</h2>
+            <p style="font-weight:700; color:#8a5a31; font-size:0.92rem; margin-bottom:0;">
+                Genel Güven Skoru: %{result.final_score:.1f}
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        if result.summary:
+            st.markdown(f"""
+            <div class="summary-card">
+                <h3 style="margin-top:0; color:#41675a; font-size:1.1rem;">📝 Kısa Haber Özeti</h3>
+                <p style="color:#334155; font-size:0.92rem; line-height:1.6; margin-bottom:0;">
+                    {result.summary}
+                </p>
             </div>
             """, unsafe_allow_html=True)
 
@@ -278,39 +408,39 @@ def run_app():
             st.markdown("""
             <div class="result-card">
                 <h3 class="section-title">🎯 Tespit Edilen Ana İddialar</h3>
+                <p class="small-muted">
+                    Sistem; kişi, kurum, olay, sayı, tarih veya net iddia içeren cümleleri öncelikli olarak seçer.
+                </p>
             </div>
             """, unsafe_allow_html=True)
 
             for index, claim in enumerate(result.claims, start=1):
-                st.markdown(f'<div class="claim-item"><strong>{index}.</strong> {claim}</div>', unsafe_allow_html=True)
-
-        # "BULUNAN KANITLAR" KISMI TASARIMSAL VE STRATEJİK OLARAK BURADAN KALDIRILDI.
+                st.markdown(
+                    f'<div class="claim-item"><strong>{index}.</strong> {claim}</div>',
+                    unsafe_allow_html=True
+                )
 
         if result.verifications:
-            st.markdown("""
-            <div class="result-card">
-                <h3 class="section-title">✅ Doğrulama Sonuçları</h3>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown("### ✅ Doğrulama Sonuçları")
 
             for claim, verification in result.verifications.items():
                 verdict = verification.get("verdict", "Bilinmiyor")
                 score = verification.get("score", 0)
-                explanation = verification.get("explanation", "")
+                confidence_level = verification.get("confidence_level", "Bilinmiyor")
 
-                st.markdown(f"""
-                <div class="verification-item">
-                    <strong style="color:#1e40af;">İddia:</strong><br>
-                    {claim}<br><br>
-                    <strong>Karar:</strong> {verdict}<br>
-                    <strong>Anlamsal Uyumluluk Skoru:</strong> %{score:.1f}<br>
-                    <strong>Yapay Zekâ Analizi:</strong> {explanation}
-                </div>
-                """, unsafe_allow_html=True)
+                with st.container(border=True):
+                    st.markdown("**İddia:**")
+                    st.write(claim)
+
+                    show_verdict(verdict)
+
+                    st.markdown(
+                        f"**Güven Düzeyi:** {confidence_level} (%{score:.1f})"
+                    )
 
     st.markdown("""
-    <div style="text-align:center; padding:3rem 0; color:#94a3b8;">
-        <h4>⚡ Güvenilir Haber Doğrulama Sistemi</h4>
+    <div class="footer">
+        <strong>Güvenilir Haber Doğrulama Sistemi</strong>
     </div>
     """, unsafe_allow_html=True)
 
